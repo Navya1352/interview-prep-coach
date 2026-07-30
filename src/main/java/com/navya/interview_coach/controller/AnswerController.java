@@ -39,11 +39,17 @@ public class AnswerController {
             question.getIdealAnswerNotes(),
             answerText
         );
+       
       String evaluationText=null;
+      int scoreIndex = fullResponse.indexOf("SCORE:");
       String decision=null;
+      Integer score = null;
+
       int decisionIndex=fullResponse.indexOf("DECISION:");
-       if(decisionIndex!=-1){
-        evaluationText=fullResponse.substring(0,decisionIndex).trim();
+       if(scoreIndex != -1 &&decisionIndex!=-1){
+        evaluationText=fullResponse.substring(0,scoreIndex).trim();
+        String scoreText = fullResponse.substring(scoreIndex + "SCORE:".length(), decisionIndex).trim();
+        score = Integer.parseInt(scoreText);
         decision=fullResponse.substring(decisionIndex+"DECISION:".length()).trim();
        }
 
@@ -53,6 +59,7 @@ public class AnswerController {
         answer.setAnswerText(answerText);
         answer.setAiEvaluation(evaluationText);
         answer.setDecision(decision);
+        answer.setScore(score);
 
         return answerRepository.save(answer);
     }

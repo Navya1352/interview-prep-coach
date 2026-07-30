@@ -30,6 +30,8 @@ public class Answer {
 
     @Column(name = "answered_at", nullable = false)
     private LocalDateTime answeredAt;
+    @Column
+    private Integer score;
 
     @PrePersist
     public void prePersist() {
@@ -60,4 +62,7 @@ public class Answer {
 
     public LocalDateTime getAnsweredAt() { return answeredAt; }
     public void setAnsweredAt(LocalDateTime answeredAt) { this.answeredAt = answeredAt; }
+
+    public Integer getScore() { return score; }
+    public void setScore(Integer score) { this.score = score; }
 }

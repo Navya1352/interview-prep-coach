@@ -17,10 +17,11 @@ public class GroqService {
 
     public String evaluateAnswer(String questionText, String idealAnswerNotes, String userAnswer) {
         String prompt = "Question: " + questionText + "\n" +
-                "Ideal answer should cover: " + idealAnswerNotes + "\n" +
-                "Candidate's answer: " + userAnswer + "\n\n" +
-                "Evaluate the candidate's answer in 2-3 sentences. Then on a new line, output exactly one of: DECISION: HARDER_SAME_TOPIC, DECISION: NEW_TOPIC, or DECISION: FLAG_WEAK_AREA.";
-
+        "Ideal answer should cover: " + idealAnswerNotes + "\n" +
+        "Candidate's answer: " + userAnswer + "\n\n" +
+        "Evaluate the candidate's answer in 2-3 sentences. " +
+        "Then on a new line, output a score from 1 to 5 rating the answer's quality, in the exact format: SCORE: X\n" +
+        "Then on a new line, output exactly one of: DECISION: HARDER_SAME_TOPIC, DECISION: NEW_TOPIC, or DECISION: FLAG_WEAK_AREA.";
         Map<String, Object> requestBody = Map.of(
             "model", "llama-3.3-70b-versatile",
             "messages", List.of(
