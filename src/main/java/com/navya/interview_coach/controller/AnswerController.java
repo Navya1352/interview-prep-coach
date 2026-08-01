@@ -7,6 +7,7 @@ import com.navya.interview_coach.repositary.AnswerRepository;
 import com.navya.interview_coach.repositary.PrepSessionRepository;
 import com.navya.interview_coach.repositary.QuestionRepository;
 import com.navya.interview_coach.service.EmbeddingService;
+import com.navya.interview_coach.service.GroqResponse;
 import com.navya.interview_coach.service.GroqService;
 
 import java.util.List;
@@ -48,12 +49,13 @@ for (Question q : similarQuestions) {
     relatedContext.append("- ").append(q.getQuestionText()).append("\n");
 }
 
-        String fullResponse = groqService.evaluateAnswer(
+        GroqResponse groqResponse = groqService.evaluateAnswer(
             question.getQuestionText(),
             question.getIdealAnswerNotes(),
-            answerText,relatedContext.toString()
+            answerText,
+            relatedContext.toString()
         );
-       
+        String fullResponse = groqResponse.getContent();
       String evaluationText=null;
       int scoreIndex = fullResponse.indexOf("SCORE:");
       int evaluationIndex = fullResponse.indexOf("EVALUATION:");
@@ -76,6 +78,9 @@ for (Question q : similarQuestions) {
         answer.setAiEvaluation(evaluationText);
         answer.setDecision(decision);
         answer.setScore(score);
+        answer.setPromptTokens(groqResponse.getPromptTokens());
+answer.setCompletionTokens(groqResponse.getCompletionTokens());
+answer.setTotalTokens(groqResponse.getTotalTokens());
         Question nextQuestion = null;
 
 if (decision != null) {

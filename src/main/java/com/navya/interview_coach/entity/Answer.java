@@ -33,6 +33,15 @@ public class Answer {
     @Column
     private Integer score;
 
+    @Column(name = "prompt_tokens")
+private Integer promptTokens;
+
+@Column(name = "completion_tokens")
+private Integer completionTokens;
+
+@Column(name = "total_tokens")
+private Integer totalTokens;
+
     @PrePersist
     public void prePersist() {
         if (answeredAt == null) {
@@ -65,4 +74,13 @@ public class Answer {
 
     public Integer getScore() { return score; }
     public void setScore(Integer score) { this.score = score; }
+
+    public Integer getPromptTokens() { return promptTokens; }
+public void setPromptTokens(Integer promptTokens) { this.promptTokens = promptTokens; }
+
+public Integer getCompletionTokens() { return completionTokens; }
+public void setCompletionTokens(Integer completionTokens) { this.completionTokens = completionTokens; }
+
+public Integer getTotalTokens() { return totalTokens; }
+public void setTotalTokens(Integer totalTokens) { this.totalTokens = totalTokens; }
 }

@@ -15,7 +15,7 @@ public class GroqService {
 
     private final RestClient restClient = RestClient.create("https://api.groq.com");
 
-    public String evaluateAnswer(String questionText, String idealAnswerNotes, String userAnswer, String relatedQuestions) {
+    public GroqResponse evaluateAnswer(String questionText, String idealAnswerNotes, String userAnswer, String relatedQuestions) {
         String prompt = "You are an interview coach evaluating a candidate's answer.\n\n" +
                 "Question: " + questionText + "\n" +
                 "Ideal answer should cover: " + idealAnswerNotes + "\n" +
@@ -47,6 +47,13 @@ public class GroqService {
         List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
         Map<String, Object> firstChoice = choices.get(0);
         Map<String, Object> message = (Map<String, Object>) firstChoice.get("message");
-        return (String) message.get("content");
+        String content = (String) message.get("content");
+
+        Map<String, Object> usage = (Map<String, Object>) response.get("usage");
+        Integer promptTokens = (Integer) usage.get("prompt_tokens");
+        Integer completionTokens = (Integer) usage.get("completion_tokens");
+        Integer totalTokens = (Integer) usage.get("total_tokens");
+    
+        return new GroqResponse(content, promptTokens, completionTokens, totalTokens);
     }
 }
