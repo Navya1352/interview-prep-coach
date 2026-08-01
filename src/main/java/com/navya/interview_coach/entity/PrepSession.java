@@ -28,6 +28,10 @@ public class PrepSession {
     @Column(nullable = false, length = 20)
     private String status = "active";
 
+    @ManyToOne
+@JoinColumn(name = "current_question_id")
+private Question currentQuestion;
+
     @PrePersist
     public void prePersist() {
         if (startedAt == null) {
@@ -51,4 +55,9 @@ public class PrepSession {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public Question getCurrentQuestion() { return currentQuestion; }
+    public void setCurrentQuestion(Question currentQuestion) { this.currentQuestion = currentQuestion; }
+
+
 }

@@ -15,13 +15,20 @@ public class GroqService {
 
     private final RestClient restClient = RestClient.create("https://api.groq.com");
 
-    public String evaluateAnswer(String questionText, String idealAnswerNotes, String userAnswer) {
-        String prompt = "Question: " + questionText + "\n" +
-        "Ideal answer should cover: " + idealAnswerNotes + "\n" +
-        "Candidate's answer: " + userAnswer + "\n\n" +
-        "Evaluate the candidate's answer in 2-3 sentences. " +
-        "Then on a new line, output a score from 1 to 5 rating the answer's quality, in the exact format: SCORE: X\n" +
-        "Then on a new line, output exactly one of: DECISION: HARDER_SAME_TOPIC, DECISION: NEW_TOPIC, or DECISION: FLAG_WEAK_AREA.";
+    public String evaluateAnswer(String questionText, String idealAnswerNotes, String userAnswer, String relatedQuestions) {
+        String prompt = "You are an interview coach evaluating a candidate's answer.\n\n" +
+                "Question: " + questionText + "\n" +
+                "Ideal answer should cover: " + idealAnswerNotes + "\n" +
+                "Candidate's answer: " + userAnswer + "\n\n" +
+                "Related questions the candidate may want to connect this to:\n" + relatedQuestions + "\n" +
+                "Respond in EXACTLY this format, with no extra text before or after:\n\n" +
+                "EVALUATION: <2-3 sentence evaluation, optionally referencing a related question above if genuinely relevant>\n" +
+                "SCORE: <a single integer from 1 to 5>\n" +
+                "DECISION: <one of HARDER_SAME_TOPIC, NEW_TOPIC, or FLAG_WEAK_AREA>\n\n" +
+                "Example of correct format:\n" +
+                "EVALUATION: The candidate correctly explained the core concept but missed a key tradeoff.\n" +
+                "SCORE: 3\n" +
+                "DECISION: NEW_TOPIC";
         Map<String, Object> requestBody = Map.of(
             "model", "llama-3.3-70b-versatile",
             "messages", List.of(
