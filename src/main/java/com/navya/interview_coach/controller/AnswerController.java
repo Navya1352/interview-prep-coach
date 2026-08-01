@@ -3,14 +3,18 @@ package com.navya.interview_coach.controller;
 import com.navya.interview_coach.entity.Answer;
 import com.navya.interview_coach.entity.PrepSession;
 import com.navya.interview_coach.entity.Question;
+import com.navya.interview_coach.entity.WeakArea;
 import com.navya.interview_coach.repositary.AnswerRepository;
 import com.navya.interview_coach.repositary.PrepSessionRepository;
 import com.navya.interview_coach.repositary.QuestionRepository;
+import com.navya.interview_coach.repositary.WeakAreaRepository;
 import com.navya.interview_coach.service.EmbeddingService;
 import com.navya.interview_coach.service.GroqResponse;
 import com.navya.interview_coach.service.GroqService;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +37,8 @@ public class AnswerController {
 
     @Autowired
     private EmbeddingService embeddingService;
+    @Autowired 
+    private WeakAreaRepository weakAreaRepository;
     
     @PostMapping
     public Answer submitAnswer(@RequestParam Integer sessionId,
@@ -99,6 +105,21 @@ if (decision != null) {
             nextQuestion = otherTopics.get(0);
         }
     }
+}
+
+if ("FLAG_WEAK_AREA".equals(decision)) {
+    Optional<WeakArea> existing = weakAreaRepository.findByTopic(question.getTopic());
+    WeakArea weakArea;
+    if (existing.isPresent()) {
+        weakArea = existing.get();
+        weakArea.setTimesFlagged(weakArea.getTimesFlagged() + 1);
+    } else {
+        weakArea = new WeakArea();
+        weakArea.setTopic(question.getTopic());
+        weakArea.setTimesFlagged(1);
+    }
+    weakArea.setLastFlaggedAt(LocalDateTime.now());
+    weakAreaRepository.save(weakArea);
 }
 
 if (nextQuestion != null) {
